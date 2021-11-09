@@ -137,7 +137,7 @@ spec:
         - name: kong-enterprise-edition-docker
       containers:
       - name: kong
-        image: kong/kong-gateway:2.6.0.0-centos7
+        image: kong/kong-gateway:latest
         env:
           - name: KONG_ADMIN_LISTEN
             value: '0.0.0.0:8001, 0.0.0.0:8444 ssl'
@@ -264,7 +264,7 @@ spec:
           value: postgres
         - name: KONG_PG_PORT
           value: "5432"
-        image: kong/kong-gateway:2.6.0.0-centos7
+        image: kong/kong-gateway:latest
         name: kong-migrations
       # imagePullSecrets:
       # - name: kong-enterprise-edition-docker
