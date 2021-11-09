@@ -1,10 +1,11 @@
 #!/bin/bash
-read -p 'Please enter your Kong EE license path:' licensePath
-kubectl create ns kong-gw
+#read -p 'Please enter your Kong EE license path:' licensePath
+kubectl create namespace kong-gw
 echo "workspace kong-gw created"
-kubectl create secret generic kong-enterprise-license -n kong-gw --from-file=license=$licensePath
+kubectl create secret generic kong-enterprise-license -n kong-gw --from-file=license=$1
 echo "License secret created"
-kubectl apply -f https://git.io/JXgjL -n kong-gw
+kubectl apply -f https://git.io/JX2cK -n kong-gw
+
 echo "Wait for Kong Gateway deployment"
 kubectl wait --for=condition=available --timeout=500s --namespace=kong-gw deployment/kong-enterprise
 echo "Kong Gateway deployed successfully"
