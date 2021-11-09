@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:   
+    kubernetes.io/ingress.class: kong
+    namespace: kong-gw
+  name: gateway-ingress
+  namespace: kong-gw
+spec:
+  rules:
+  - host: kong-proxy.local
+    http:
+      paths:
+      - backend:
+          service:
+            name: kong-proxy
+            port:
+              number: 8000
+        path: /
+        pathType: Prefix
+
