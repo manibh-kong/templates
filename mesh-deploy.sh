@@ -15,3 +15,16 @@ kubectl get pods  -n kuma-demo --no-headers=true | awk '/redis/{print $1}' | xar
 echo "Kuma redis po restarted"
 echo "Now all of your existing pods should have mesh sidecar container"
 
+echo 'apiVersion: kuma.io/v1alpha1
+kind: Mesh
+metadata:
+  name: default
+spec:
+  mtls:
+    enabledBackend: ca-1
+    backends:
+    - name: ca-1
+      type: builtin' | kubectl apply -f -
+
+kubectl get trafficpermissions.kuma.io --no-headers=true | awk '/allow-all-default/{print $1}' | xargs kubectl delete trafficpermissions.kuma.io
+echo "Kong Mesh Zero trust Enabled, You need to define traffic permissions now"
