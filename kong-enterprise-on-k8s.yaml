@@ -26,24 +26,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: kong-proxy-ssl
-  namespace: kong-gw
-spec:
-  type: LoadBalancer
-  loadBalancerSourceRanges:
-  - 0.0.0.0/0
-  ports:
-  - name: kong-proxy-ssl
-    port: 8443
-    targetPort: 8443
-    protocol: TCP
-  selector:
-    app: kong
-
----
-apiVersion: v1
-kind: Service
-metadata:
   name: kong-admin
   namespace: kong-gw
 spec:
@@ -54,24 +36,6 @@ spec:
   - name: kong-admin
     port: 8001
     targetPort: 8001
-    protocol: TCP
-  selector:
-    app: kong
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: kong-admin-ssl
-  namespace: kong-gw
-spec:
-  type: LoadBalancer
-  loadBalancerSourceRanges:
-  - 0.0.0.0/0
-  ports:
-  - name: kong-admin-ssl
-    port: 8444
-    targetPort: 8444
     protocol: TCP
   selector:
     app: kong
@@ -95,24 +59,7 @@ spec:
     app: kong
 
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: kong-manager-ssl
-  namespace: kong-gw
-spec:
-  type: LoadBalancer
-  loadBalancerSourceRanges:
-  - 0.0.0.0/0
-  ports:
-  - name: kong-manager-ssl
-    port: 8445
-    targetPort: 8445
-    protocol: TCP
-  selector:
-    app: kong
 
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -139,11 +86,11 @@ spec:
         image: kong/kong-gateway:latest
         env:
           - name: KONG_ADMIN_LISTEN
-            value: '0.0.0.0:8001, 0.0.0.0:8444 ssl'
+            value: '0.0.0.0:8001'
           - name: KONG_ADMIN_API_URI
             value: localhost:8001    
           - name: KONG_ADMIN_GUI_LISTEN
-            value: '0.0.0.0:8002, 0.0.0.0:8445 ssl'
+            value: '0.0.0.0:8002'
           - name: KONG_ENFORCE_RBAC
             value: 'off'          
           - name: KONG_PG_PASSWORD
@@ -158,11 +105,11 @@ spec:
             value: /dev/stderr
           - name: KONG_ADMIN_ERROR_LOG
             value: /dev/stderr
-          - name: KONG_LICENSE_DATA
-            valueFrom:
-              secretKeyRef:
-                name: kong-enterprise-license
-                key: license
+          # - name: KONG_LICENSE_DATA
+            # valueFrom:
+            #   secretKeyRef:
+            #     name: kong-enterprise-license
+            #     key: license
           - name: KONG_PORTAL
             value: 'off'          
 ---
@@ -241,11 +188,11 @@ spec:
         - -c
         - kong migrations bootstrap
         env:
-        - name: KONG_LICENSE_DATA
-          valueFrom:
-            secretKeyRef:
-              key: license
-              name: kong-enterprise-license       
+        # - name: KONG_LICENSE_DATA
+        #   valueFrom:
+        #     secretKeyRef:
+        #       key: license
+        #       name: kong-enterprise-license       
         - name: KONG_PG_PASSWORD
           value: kong
         - name: KONG_PG_HOST
